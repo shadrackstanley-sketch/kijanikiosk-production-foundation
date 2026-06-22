@@ -157,6 +157,16 @@ WorkingDirectory=/opt/kijanikiosk
 ExecStart=/bin/bash -c 'while true; do sleep 3600; done'
 Restart=always
 RestartSec=5
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=true
+ProtectKernelLogs=true
+SystemCallArchitectures=native
+RestrictRealtime=true
+SystemCallFilter=@system-service
 
 NoNewPrivileges=true
 PrivateTmp=true
@@ -171,6 +181,8 @@ PrivateDevices=true
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
+
+
 
 [Install]
 WantedBy=multi-user.target
@@ -254,6 +266,16 @@ PrivateDevices=true
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=true
+ProtectKernelLogs=true
+SystemCallArchitectures=native
+RestrictRealtime=true
+SystemCallFilter=@system-service
 
 [Install]
 WantedBy=multi-user.target

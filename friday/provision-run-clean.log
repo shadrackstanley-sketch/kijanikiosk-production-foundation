@@ -35,12 +35,12 @@ INFO: Created and started all three systemd units
 ================================================
 PHASE 5 - Firewall Configuration
 ================================================
-Backing up 'user.rules' to '/etc/ufw/user.rules.20260622_031307'
-Backing up 'before.rules' to '/etc/ufw/before.rules.20260622_031307'
-Backing up 'after.rules' to '/etc/ufw/after.rules.20260622_031307'
-Backing up 'user6.rules' to '/etc/ufw/user6.rules.20260622_031307'
-Backing up 'before6.rules' to '/etc/ufw/before6.rules.20260622_031307'
-Backing up 'after6.rules' to '/etc/ufw/after6.rules.20260622_031307'
+Backing up 'user.rules' to '/etc/ufw/user.rules.20260622_033932'
+Backing up 'before.rules' to '/etc/ufw/before.rules.20260622_033932'
+Backing up 'after.rules' to '/etc/ufw/after.rules.20260622_033932'
+Backing up 'user6.rules' to '/etc/ufw/user6.rules.20260622_033932'
+Backing up 'before6.rules' to '/etc/ufw/before6.rules.20260622_033932'
+Backing up 'after6.rules' to '/etc/ufw/after6.rules.20260622_033932'
 
 Default incoming policy changed to 'deny'
 (be sure to update your rules accordingly)
@@ -95,6 +95,16 @@ WorkingDirectory=/opt/kijanikiosk
 ExecStart=/bin/bash -c 'while true; do sleep 3600; done'
 Restart=always
 RestartSec=5
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=true
+ProtectKernelLogs=true
+SystemCallArchitectures=native
+RestrictRealtime=true
+SystemCallFilter=@system-service
 
 NoNewPrivileges=true
 PrivateTmp=true
@@ -109,6 +119,8 @@ PrivateDevices=true
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
+
+
 
 [Install]
 WantedBy=multi-user.target
@@ -190,6 +202,16 @@ PrivateDevices=true
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=true
+ProtectKernelLogs=true
+SystemCallArchitectures=native
+RestrictRealtime=true
+SystemCallFilter=@system-service
 
 [Install]
 WantedBy=multi-user.target
