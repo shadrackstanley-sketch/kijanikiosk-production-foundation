@@ -1,0 +1,224 @@
+
+================================================
+PHASE 1 - Package Validation & Version Checks
+================================================
+Hit:1 http://security.ubuntu.com/ubuntu resolute-security InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu resolute InRelease
+Hit:3 http://archive.ubuntu.com/ubuntu resolute-updates InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu resolute-backports InRelease
+Reading package lists...
+INFO: Already installed: curl
+INFO: Already installed: ufw
+INFO: Already installed: acl
+INFO: Already installed: logrotate
+INFO: Already installed: nginx
+INFO: Dirty state detected: curl package hold exists
+
+================================================
+PHASE 2 - Users and Groups
+================================================
+INFO: Already exists: group kijanikiosk
+INFO: Already exists: kk-api
+INFO: Already exists: kk-payments
+INFO: Already exists: kk-logs
+
+================================================
+PHASE 3 - Directories, Permissions & ACLs
+================================================
+INFO: Corrected config permissions and restored log ACLs
+
+================================================
+PHASE 4 - Systemd Service Deployment
+================================================
+INFO: Created and started all three systemd units
+
+================================================
+PHASE 5 - Firewall Configuration
+================================================
+Backing up 'user.rules' to '/etc/ufw/user.rules.20260622_031307'
+Backing up 'before.rules' to '/etc/ufw/before.rules.20260622_031307'
+Backing up 'after.rules' to '/etc/ufw/after.rules.20260622_031307'
+Backing up 'user6.rules' to '/etc/ufw/user6.rules.20260622_031307'
+Backing up 'before6.rules' to '/etc/ufw/before6.rules.20260622_031307'
+Backing up 'after6.rules' to '/etc/ufw/after6.rules.20260622_031307'
+
+Default incoming policy changed to 'deny'
+(be sure to update your rules accordingly)
+Default outgoing policy changed to 'allow'
+(be sure to update your rules accordingly)
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated
+Rules updated (v6)
+Rules updated
+Rules updated (v6)
+Firewall is active and enabled on system startup
+
+================================================
+PHASE 6 - Environment Files & Access Model
+================================================
+PASS: Environment files readable by correct service accounts
+
+================================================
+PHASE 7 - Journal Persistence & Log Rotation
+================================================
+PASS: Journal persistence and logrotate configured
+
+================================================
+PHASE 8 - Health Checks & Final Verification
+================================================
+uid=999(kk-api) gid=986(kk-api) groups=986(kk-api),1002(kijanikiosk)
+PASS: kk-api account exists
+uid=997(kk-payments) gid=985(kk-payments) groups=985(kk-payments),1002(kijanikiosk)
+PASS: kk-payments account exists
+uid=994(kk-logs) gid=984(kk-logs) groups=984(kk-logs),1002(kijanikiosk)
+PASS: kk-logs account exists
+kijanikiosk:x:1002:kk-api,kk-payments,kk-logs,stan
+PASS: kijanikiosk group exists
+PASS: config directory is not world writable
+PASS: log directory exists
+PASS: health JSON exists
+# /etc/systemd/system/kk-api.service
+[Unit]
+Description=KijaniKiosk API Service
+After=network.target
+
+[Service]
+Type=simple
+User=kk-api
+Group=kijanikiosk
+EnvironmentFile=/opt/kijanikiosk/config/api.env
+WorkingDirectory=/opt/kijanikiosk
+ExecStart=/bin/bash -c 'while true; do sleep 3600; done'
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/kijanikiosk/shared/logs
+CapabilityBoundingSet=
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
+PASS: kk-api unit exists
+# /etc/systemd/system/kk-payments.service
+[Unit]
+Description=KijaniKiosk Payments Service
+After=network.target kk-api.service
+Wants=kk-api.service
+
+[Service]
+Type=simple
+User=kk-payments
+Group=kijanikiosk
+EnvironmentFile=/opt/kijanikiosk/config/payments-api.env
+WorkingDirectory=/opt/kijanikiosk
+ExecStart=/bin/bash -c 'while true; do sleep 3600; done'
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/kijanikiosk/config
+ReadWritePaths=/opt/kijanikiosk/shared/logs
+CapabilityBoundingSet=
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+DevicePolicy=closed
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+RestrictRealtime=true
+PrivateMounts=true
+RemoveIPC=true
+UMask=0077
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+ProtectProc=invisible
+ProcSubset=pid
+PrivateUsers=true
+
+[Install]
+WantedBy=multi-user.target
+PASS: kk-payments unit exists
+# /etc/systemd/system/kk-logs.service
+[Unit]
+Description=KijaniKiosk Logs Service
+After=network.target
+
+[Service]
+Type=simple
+User=kk-logs
+Group=kijanikiosk
+EnvironmentFile=/opt/kijanikiosk/config/logs.env
+WorkingDirectory=/opt/kijanikiosk
+ExecStart=/bin/bash -c 'while true; do sleep 3600; done'
+Restart=always
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/kijanikiosk/shared/logs /opt/kijanikiosk/health
+CapabilityBoundingSet=
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target
+PASS: kk-logs unit exists
+PASS: kk-api service active
+PASS: kk-payments service active
+PASS: kk-logs service active
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere                   # SSH administration
+80/tcp                     ALLOW       Anywhere                   # HTTP web traffic
+3001/tcp                   ALLOW       10.0.1.0/24                # Monitoring health checks
+3001/tcp on lo             ALLOW       Anywhere                   # Local reverse proxy access
+3001/tcp                   DENY        Anywhere                   # Block external payments port
+22/tcp (v6)                ALLOW       Anywhere (v6)              # SSH administration
+80/tcp (v6)                ALLOW       Anywhere (v6)              # HTTP web traffic
+3001/tcp (v6) on lo        ALLOW       Anywhere (v6)              # Local reverse proxy access
+3001/tcp (v6)              DENY        Anywhere (v6)              # Block external payments port
+
+PASS: UFW active
+PASS: SSH firewall rule present
+PASS: HTTP firewall rule present
+PASS: 3001 monitoring rule present
+PASS: 3001 deny rule present
+PASS: journal config exists
+PASS: logrotate config exists
+PASS: logrotate debug passes
+PASS: kk-api can write after logrotate
+
+ALL CHECKS PASSED
