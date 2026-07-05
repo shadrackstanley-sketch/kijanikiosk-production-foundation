@@ -1,0 +1,14 @@
+---
+base_packages:
+  - curl
+  - ufw
+  - logrotate
+
+app_base_dir: /opt/kijanikiosk
+config_dir: /opt/kijanikiosk/config
+logs_dir: /opt/kijanikiosk/shared/logs
+
+service_users:
+  - kk-api
+  - kk-payments
+  - kk-logs

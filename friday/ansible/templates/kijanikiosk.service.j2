@@ -1,0 +1,46 @@
+[Unit]
+Description={{ service_name }} service
+After=network.target
+
+[Service]
+User={{ service_name }}
+Group={{ service_name }}
+WorkingDirectory={{ app_base_dir }}
+EnvironmentFile={{ config_dir }}/{{ service_name }}.env
+ExecStart=/bin/sleep infinity
+Restart=always
+RestartSec=5
+UMask=0077
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+PrivateUsers=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectProc=invisible
+ProcSubset=pid
+ReadWritePaths={{ app_base_dir }}
+CapabilityBoundingSet=
+AmbientCapabilities=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RemoveIPC=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources @mount @raw-io @reboot @swap @module @debug @obsolete @cpu-emulation
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

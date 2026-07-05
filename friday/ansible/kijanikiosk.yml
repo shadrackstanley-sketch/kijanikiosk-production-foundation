@@ -1,0 +1,87 @@
+---
+- name: Configure KijaniKiosk servers
+  hosts: kijanikiosk
+  become: true
+  handlers:
+    - import_tasks: handlers/main.yml
+
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: "{{ base_packages }}"
+        state: present
+        update_cache: true
+
+    - name: Create service users
+      ansible.builtin.user:
+        name: "{{ item }}"
+        shell: /usr/sbin/nologin
+        system: true
+        create_home: false
+      loop: "{{ service_users }}"
+
+    - name: Create application directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ app_base_dir }}"
+        - "{{ config_dir }}"
+        - "{{ logs_dir }}"
+
+    - name: Create service environment file
+      ansible.builtin.template:
+        src: service.env.j2
+        dest: "{{ config_dir }}/{{ service_name }}.env"
+        owner: "{{ service_name }}"
+        group: "{{ service_name }}"
+        mode: "0640"
+      notify: Restart kijanikiosk service
+
+    - name: Install systemd service
+      ansible.builtin.template:
+        src: kijanikiosk.service.j2
+        dest: "/etc/systemd/system/{{ service_name }}.service"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+        - Restart kijanikiosk service
+
+    - name: Enable and start service
+      ansible.builtin.systemd:
+        name: "{{ service_name }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Enable journal persistence directory
+      ansible.builtin.file:
+        path: /var/log/journal
+        state: directory
+        owner: root
+        group: systemd-journal
+        mode: "2755"
+
+    - name: Configure logrotate
+      ansible.builtin.template:
+        src: kijanikiosk-logrotate.j2
+        dest: /etc/logrotate.d/kijanikiosk
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
+
+    - name: Allow SSH
+      community.general.ufw:
+        rule: allow
+        port: "22"
+        proto: tcp

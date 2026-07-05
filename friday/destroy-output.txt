@@ -1,0 +1,68 @@
+[0m[1mmodule.app_server["api"].null_resource.server: Refreshing state... [id=4652354517746580376][0m
+[0m[1mmodule.app_server["payments"].null_resource.server: Refreshing state... [id=4254866216767537362][0m
+[0m[1mmodule.app_server["logs"].null_resource.server: Refreshing state... [id=4467209886988163024][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.app_server["api"].null_resource.server[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "null_resource" "server" {
+      [31m-[0m[0m id       = "4652354517746580376" [90m-> null[0m[0m
+      [31m-[0m[0m triggers = {
+          [31m-[0m[0m "cpus"   = "1"
+          [31m-[0m[0m "disk"   = "10G"
+          [31m-[0m[0m "image"  = "22.04"
+          [31m-[0m[0m "memory" = "1G"
+          [31m-[0m[0m "name"   = "kijanikiosk-api"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # module.app_server["logs"].null_resource.server[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "null_resource" "server" {
+      [31m-[0m[0m id       = "4467209886988163024" [90m-> null[0m[0m
+      [31m-[0m[0m triggers = {
+          [31m-[0m[0m "cpus"   = "1"
+          [31m-[0m[0m "disk"   = "10G"
+          [31m-[0m[0m "image"  = "22.04"
+          [31m-[0m[0m "memory" = "1G"
+          [31m-[0m[0m "name"   = "kijanikiosk-logs"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # module.app_server["payments"].null_resource.server[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "null_resource" "server" {
+      [31m-[0m[0m id       = "4254866216767537362" [90m-> null[0m[0m
+      [31m-[0m[0m triggers = {
+          [31m-[0m[0m "cpus"   = "1"
+          [31m-[0m[0m "disk"   = "10G"
+          [31m-[0m[0m "image"  = "22.04"
+          [31m-[0m[0m "memory" = "1G"
+          [31m-[0m[0m "name"   = "kijanikiosk-payments"
+        } [90m-> null[0m[0m
+    }
+
+[1mPlan:[0m [0m0 to add, 0 to change, 3 to destroy.
+
+Changes to Outputs:
+  [31m-[0m[0m server_names = {
+      [31m-[0m[0m api      = "kijanikiosk-api"
+      [31m-[0m[0m logs     = "kijanikiosk-logs"
+      [31m-[0m[0m payments = "kijanikiosk-payments"
+    } [90m-> null[0m[0m
+[0m[1m
+Do you really want to destroy all resources?[0m
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  [1mEnter a value:[0m [0m
+[0m[1mmodule.app_server["logs"].null_resource.server: Destroying... [id=4467209886988163024][0m[0m
+[0m[1mmodule.app_server["payments"].null_resource.server: Destroying... [id=4254866216767537362][0m[0m
+[0m[1mmodule.app_server["api"].null_resource.server: Destroying... [id=4652354517746580376][0m[0m
+[0m[1mmodule.app_server["logs"].null_resource.server: Destruction complete after 0s[0m
+[0m[1mmodule.app_server["payments"].null_resource.server: Destruction complete after 0s[0m
+[0m[1mmodule.app_server["api"].null_resource.server: Destruction complete after 0s[0m
+[0m[1m[32m
+Destroy complete! Resources: 3 destroyed.[0m

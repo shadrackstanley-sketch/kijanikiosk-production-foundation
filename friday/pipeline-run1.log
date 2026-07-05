@@ -1,0 +1,116 @@
+==> Running Terraform apply
+[0m[1mmodule.app_server["api"].null_resource.server: Refreshing state... [id=4652354517746580376][0m
+[0m[1mmodule.app_server["payments"].null_resource.server: Refreshing state... [id=4254866216767537362][0m
+[0m[1mmodule.app_server["logs"].null_resource.server: Refreshing state... [id=4467209886988163024][0m
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
+[0m[1m[32m
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.[0m
+[0m[1m[32m
+Outputs:
+
+[0mserver_names = {
+  "api" = "kijanikiosk-api"
+  "logs" = "kijanikiosk-logs"
+  "payments" = "kijanikiosk-payments"
+}
+==> Checking Terraform idempotency
+[0m[1mmodule.app_server["logs"].null_resource.server: Refreshing state... [id=4467209886988163024][0m
+[0m[1mmodule.app_server["api"].null_resource.server: Refreshing state... [id=4652354517746580376][0m
+[0m[1mmodule.app_server["payments"].null_resource.server: Refreshing state... [id=4254866216767537362][0m
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
+==> Collecting Multipass IPs
+==> Writing Ansible inventory
+==> Inventory created:
+[kijanikiosk]
+api ansible_host=10.247.111.87
+payments ansible_host=10.247.111.111
+logs ansible_host=10.247.111.80
+
+[kijanikiosk:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_python_interpreter=/usr/bin/python3
+==> Running Ansible
+
+PLAY [Configure KijaniKiosk servers] *******************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [payments]
+ok: [logs]
+ok: [api]
+
+TASK [Install required packages] ***********************************************
+ok: [payments]
+ok: [logs]
+ok: [api]
+
+TASK [Create service users] ****************************************************
+ok: [logs] => (item=kk-api)
+ok: [payments] => (item=kk-api)
+ok: [api] => (item=kk-api)
+ok: [api] => (item=kk-payments)
+ok: [payments] => (item=kk-payments)
+ok: [logs] => (item=kk-payments)
+ok: [api] => (item=kk-logs)
+ok: [logs] => (item=kk-logs)
+ok: [payments] => (item=kk-logs)
+
+TASK [Create application directories] ******************************************
+ok: [api] => (item=/opt/kijanikiosk)
+ok: [payments] => (item=/opt/kijanikiosk)
+ok: [logs] => (item=/opt/kijanikiosk)
+ok: [api] => (item=/opt/kijanikiosk/config)
+ok: [logs] => (item=/opt/kijanikiosk/config)
+ok: [payments] => (item=/opt/kijanikiosk/config)
+ok: [logs] => (item=/opt/kijanikiosk/shared/logs)
+ok: [payments] => (item=/opt/kijanikiosk/shared/logs)
+ok: [api] => (item=/opt/kijanikiosk/shared/logs)
+
+TASK [Create service environment file] *****************************************
+ok: [api]
+ok: [logs]
+ok: [payments]
+
+TASK [Install systemd service] *************************************************
+ok: [payments]
+ok: [api]
+ok: [logs]
+
+TASK [Enable and start service] ************************************************
+ok: [payments]
+ok: [logs]
+ok: [api]
+
+TASK [Enable journal persistence directory] ************************************
+ok: [payments]
+ok: [api]
+ok: [logs]
+
+TASK [Configure logrotate] *****************************************************
+ok: [api]
+ok: [payments]
+ok: [logs]
+
+TASK [Enable UFW] **************************************************************
+ok: [logs]
+ok: [payments]
+ok: [api]
+
+TASK [Allow SSH] ***************************************************************
+ok: [api]
+ok: [payments]
+ok: [logs]
+
+PLAY RECAP *********************************************************************
+api                        : ok=11   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+logs                       : ok=11   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+payments                   : ok=11   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
