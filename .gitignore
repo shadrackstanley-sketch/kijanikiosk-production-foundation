@@ -1,0 +1,7 @@
+week5/friday/node_modules/
+week5/friday/dist/
+week5/friday/artifacts/
+week5/friday/test-results/
+week5/friday/coverage/
+week5/friday/.npmrc
+*.log
