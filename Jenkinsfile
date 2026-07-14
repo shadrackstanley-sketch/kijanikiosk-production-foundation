@@ -177,8 +177,11 @@ always-auth=true
 email=ci@kijanikiosk.local
 NPMRC
 
-                            npm publish \
-                              "${ARTIFACT_DIRECTORY}/${APP_NAME}-${PACKAGE_VERSION}.tgz" \
+                            PACKAGE_FILE="./${ARTIFACT_DIRECTORY}/${APP_NAME}-${PACKAGE_VERSION}.tgz"
+
+                            test -f "${PACKAGE_FILE}"
+
+                            npm publish "${PACKAGE_FILE}" \
                               --registry "${NEXUS_REGISTRY}"
 
                             rm -f .npmrc
