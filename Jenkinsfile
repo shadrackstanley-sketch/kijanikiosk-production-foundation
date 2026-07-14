@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:20.18.1'
+            args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
             reuseNode true
         }
     }
