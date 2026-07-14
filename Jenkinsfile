@@ -10,7 +10,7 @@ pipeline {
     parameters {
         string(
             name: 'NEXUS_URL',
-            defaultValue: 'http://192.168.100.6:8081',
+            defaultValue: 'http://172.17.0.1:8081',
             description: 'Nexus Repository base URL reachable from the Docker agent'
         )
     }
