@@ -6,6 +6,7 @@ app.get('/', (req, res) => {
   res.json({
     service: 'KijaniKiosk Payments',
     status: 'running',
+    message: 'KijaniKiosk payments service is healthy',
     version: process.env.APP_VERSION || '1.0.0'
   });
 });
