@@ -1,0 +1,45 @@
+KIJANIKIOSK WEEK 8 - AUTOMATIC ROLLBACK EVIDENCE
+
+Initial live environment:
+Green v1.4.0
+
+Rollback target:
+Blue v1.3.0
+
+T0 - Fault introduced:
+2026-08-08 21:37:17 UTC
+
+Failure detection:
+2026-08-08 21:37:21 UTC - HEALTH FAILURE 1/3
+2026-08-08 21:37:26 UTC - HEALTH FAILURE 2/3
+2026-08-08 21:37:31 UTC - HEALTH FAILURE 3/3
+
+T1 - Automatic rollback triggered:
+2026-08-08 21:37:31 UTC
+
+Rollback action:
+Current active: green
+Rollback target: blue
+
+Blue health check:
+PASSED - v1.3.0
+
+Nginx switch completed:
+2026-08-08 21:37:32 UTC
+
+T2 - Blue confirmed through production proxy:
+2026-08-08 21:37:35 UTC
+
+Final production health:
+KijaniKiosk Payments
+status: running
+version: v1.3.0
+
+Total rollback time:
+18 seconds
+
+Target:
+Rollback must complete in under 90 seconds.
+
+Result:
+PASS - 18 seconds < 90 seconds
