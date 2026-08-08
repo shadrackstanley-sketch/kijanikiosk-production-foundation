@@ -1,0 +1,22 @@
+KIJANIKIOSK WEEK 8 - IMAGE REGISTRY / CLUSTER LOAD EVIDENCE
+
+Image:
+kijanikiosk-payments:v1.4.0
+
+Local Docker image:
+Successfully built and stored in the local Docker image store.
+
+Minikube image load:
+minikube image load kijanikiosk-payments:v1.4.0
+
+Verification:
+docker.io/library/kijanikiosk-payments:v1.4.0
+
+Deployment imagePullPolicy:
+IfNotPresent
+
+Result:
+PASS - image was successfully loaded into the Minikube cluster and used by the Kubernetes deployment.
+
+Note:
+No external container registry push was required for this local Minikube deployment.

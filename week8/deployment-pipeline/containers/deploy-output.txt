@@ -1,0 +1,16 @@
+KIJANIKIOSK WEEK 8 - KUBERNETES DEPLOYMENT OUTPUT
+
+Deployment:
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+kk-payments   2/2     2            2           12m
+
+Pods:
+NAME                           READY   STATUS    RESTARTS   AGE     IP           NODE       NOMINATED NODE   READINESS GATES
+kk-payments-5b64f45db6-fn9vb   1/1     Running   0          6m48s   10.244.0.5   minikube   <none>           <none>
+kk-payments-5b64f45db6-rlt62   1/1     Running   0          12m     10.244.0.3   minikube   <none>           <none>
+
+Service:
+NAME          TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kk-payments   NodePort   10.105.88.186   <none>        80:30080/TCP   12m
+
+Result: PASS - 2 replicas successfully deployed.

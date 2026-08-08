@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kk-payments
+  labels:
+    app: kk-payments
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kk-payments
+  template:
+    metadata:
+      labels:
+        app: kk-payments
+    spec:
+      containers:
+        - name: kk-payments
+          image: kijanikiosk-payments:v1.4.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: APP_VERSION
+              value: "v1.4.0"
+            - name: NODE_ENV
+              value: "production"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"

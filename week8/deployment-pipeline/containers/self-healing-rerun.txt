@@ -1,0 +1,20 @@
+KIJANIKIOSK WEEK 8 - KUBERNETES SELF-HEALING EVIDENCE
+
+Deleted pod:
+kk-payments-5b64f45db6-79q24
+
+Replacement pod:
+kk-payments-5b64f45db6-fn9vb
+
+Pods after recovery:
+NAME                           READY   STATUS    RESTARTS   AGE     IP           NODE       NOMINATED NODE   READINESS GATES
+kk-payments-5b64f45db6-fn9vb   1/1     Running   0          6m20s   10.244.0.5   minikube   <none>           <none>
+kk-payments-5b64f45db6-rlt62   1/1     Running   0          11m     10.244.0.3   minikube   <none>           <none>
+
+Deployment after recovery:
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+kk-payments   2/2     2            2           11m
+
+Health check after recovery:
+{"service":"KijaniKiosk Payments","status":"running","message":"KijaniKiosk payments service is healthy","version":"v1.4.0"}
+Result: PASS - Kubernetes automatically restored the desired replica count.

@@ -1,0 +1,16 @@
+KIJANIKIOSK WEEK 8 - KUBERNETES SERVICE OUTPUT
+
+Service URL:
+http://192.168.49.2:30080
+
+Service:
+NAME          TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kk-payments   NodePort   10.105.88.186   <none>        80:30080/TCP   3m3s
+
+Endpoints:
+NAME          ENDPOINTS                         AGE
+kk-payments   10.244.0.3:3000,10.244.0.4:3000   3m3s
+
+Health check:
+{"service":"KijaniKiosk Payments","status":"running","message":"KijaniKiosk payments service is healthy","version":"v1.4.0"}
+Result: PASS

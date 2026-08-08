@@ -1,0 +1,12 @@
+KIJANIKIOSK WEEK 8 - CONTAINER BUILD VERIFICATION
+
+Image:
+kijanikiosk-payments:v1.4.0   160bb4767029        203MB           50MB   U    
+
+Health test:
+PASS - /health returned v1.4.0 on host port 3100
+
+Image inspection:
+Id=sha256:160bb4767029039908337b6af36dec9a3ecd4e7f2a8b7ab5573b699b30062213 Architecture=amd64 OS=linux
+
+Result: PASS
