@@ -1,0 +1,11 @@
+KIJANIKIOSK CAPSTONE - TERRAFORM STAGING PROVISIONING
+
+=== TERRAFORM OUTPUT ===
+environment = "staging"
+namespace_name = "kijani-staging"
+
+=== NAMESPACE ===
+NAME             STATUS   AGE   LABELS
+kijani-staging   Active   99s   application=kijanikiosk,environment=staging,kubernetes.io/metadata.name=kijani-staging,managed_by=terraform
+
+Result: PASS - kijani-staging provisioned by Terraform
