@@ -1,0 +1,74 @@
+---
+- name: Configure KijaniKiosk staging namespace
+  hosts: local
+  gather_facts: false
+
+  vars:
+    target_namespace: kijani-staging
+
+  tasks:
+    - name: Verify staging namespace exists
+      ansible.builtin.command:
+        cmd: kubectl get namespace {{ target_namespace }}
+      changed_when: false
+
+    - name: Read configured_by label
+      ansible.builtin.command:
+        cmd: >
+          kubectl get namespace {{ target_namespace }}
+          -o jsonpath={.metadata.labels.configured_by}
+      register: configured_by
+      changed_when: false
+      failed_when: false
+
+    - name: Read owner label
+      ansible.builtin.command:
+        cmd: >
+          kubectl get namespace {{ target_namespace }}
+          -o jsonpath={.metadata.labels.owner}
+      register: owner_label
+      changed_when: false
+      failed_when: false
+
+    - name: Apply Ansible management labels
+      ansible.builtin.command:
+        cmd: >
+          kubectl label namespace {{ target_namespace }}
+          configured_by=ansible
+          owner=kijanikiosk-platform
+          --overwrite
+      when:
+        - configured_by.stdout != "ansible" or
+          owner_label.stdout != "kijanikiosk-platform"
+
+    - name: Read staging annotation
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - get
+          - namespace
+          - "{{ target_namespace }}"
+          - -o
+          - 'jsonpath={.metadata.annotations.kijanikiosk\.io/configuration}'
+      register: staging_annotation
+      changed_when: false
+      failed_when: false
+
+    - name: Add staging annotation
+      ansible.builtin.command:
+        cmd: >
+          kubectl annotate namespace {{ target_namespace }}
+          kijanikiosk.io/configuration=staging
+          --overwrite
+      when:
+        - staging_annotation.stdout != "staging"
+
+    - name: Verify namespace configuration
+      ansible.builtin.command:
+        cmd: kubectl get namespace {{ target_namespace }} --show-labels
+      register: namespace_result
+      changed_when: false
+
+    - name: Display configured namespace
+      ansible.builtin.debug:
+        var: namespace_result.stdout

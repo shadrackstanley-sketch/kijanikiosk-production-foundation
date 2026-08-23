@@ -1,0 +1,13 @@
+KIJANIKIOSK CAPSTONE - ANSIBLE STAGING CONFIGURATION
+
+=== NAMESPACE LABELS ===
+NAME             STATUS   AGE   LABELS
+kijani-staging   Active   16m   application=kijanikiosk,configured_by=ansible,environment=staging,kubernetes.io/metadata.name=kijani-staging,managed_by=terraform,owner=kijanikiosk-platform
+
+=== STAGING ANNOTATION ===
+staging
+
+=== IDEMPOTENCY ===
+Repeated Ansible execution completed with changed=0 and failed=0
+
+Result: PASS - Terraform provisioned and Ansible configured kijani-staging
