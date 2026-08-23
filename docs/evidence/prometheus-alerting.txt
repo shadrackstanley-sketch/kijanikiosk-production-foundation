@@ -1,0 +1,16 @@
+KIJANIKIOSK CAPSTONE - PROMETHEUS ALERTING
+
+=== PROMETHEUS RULE ===
+NAME                 AGE    LABELS
+kk-payments-alerts   2m3s   app=kk-payments,release=kijani-monitoring,role=alert-rules
+
+=== ALERT EXPRESSION ===
+        - alert: KkPaymentsPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="kijani-staging",container="kk-payments"}[5m]) > 0
+            severity: warning
+            environment: staging
+
+=== PROMETHEUS LOAD CHECK ===
+KkPaymentsPodRestarting confirmed through Prometheus /api/v1/rules
+
+Result: PASS - kk-payments restart alert is committed and loaded by Prometheus.

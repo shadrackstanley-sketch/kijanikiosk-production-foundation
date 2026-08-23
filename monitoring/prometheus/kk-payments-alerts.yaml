@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kk-payments-alerts
+  namespace: monitoring
+  labels:
+    app: kk-payments
+    role: alert-rules
+    release: kijani-monitoring
+spec:
+  groups:
+    - name: kk-payments.rules
+      rules:
+        - alert: KkPaymentsPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="kijani-staging",container="kk-payments"}[5m]) > 0
+          for: 1m
+          labels:
+            severity: warning
+            service: kk-payments
+            environment: staging
+          annotations:
+            summary: "kk-payments pod restarted in staging"
+            description: "A kk-payments container in kijani-staging restarted within the last 5 minutes."
