@@ -1,0 +1,31 @@
+KIJANIKIOSK CAPSTONE - MULTI-ENVIRONMENT KUBERNETES
+
+=== STAGING DEPLOYMENT ===
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+kk-payments   3/3     3            3           3m20s
+
+=== STAGING PODS ===
+NAME                           READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+kk-payments-74d55bdb5d-8hp9p   1/1     Running   0          3m20s   10.244.0.27   minikube   <none>           <none>
+kk-payments-74d55bdb5d-hfsqj   1/1     Running   0          3m20s   10.244.0.26   minikube   <none>           <none>
+kk-payments-74d55bdb5d-zbnkh   1/1     Running   0          3m20s   10.244.0.28   minikube   <none>           <none>
+
+=== STAGING SERVICE ===
+NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+kk-payments   ClusterIP   10.105.175.172   <none>        3001/TCP   3m20s
+
+=== STAGING CONFIGURATION ===
+staging
+kijani-db-staging
+debug
+kk-payments-receipts-staging
+
+=== PRODUCTION CONFIGURATION FROM REPOSITORY ===
+  DB_HOST: kijani-db-production
+  NODE_ENV: production
+  RECEIPT_BUCKET: kk-payments-receipts-production
+
+=== SMOKE TEST ===
+PASS - http://kk-payments:3001/health returned healthy JSON from kijani-staging
+
+Result: PASS - one shared Deployment base supports staging and production with environment-specific configuration.

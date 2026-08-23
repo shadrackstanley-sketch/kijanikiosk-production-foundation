@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kk-payments-config
+data:
+  NODE_ENV: "staging"
+  DB_HOST: "kijani-db-staging"
+  DB_PORT: "5432"
+  LOG_LEVEL: "debug"
+  APP_PORT: "3001"
+  MAX_CONNECTIONS: "50"
+  RECEIPT_BUCKET: "kk-payments-receipts-staging"
