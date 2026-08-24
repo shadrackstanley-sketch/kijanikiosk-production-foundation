@@ -55,7 +55,7 @@ pipeline {
                         ).trim()
 
                         env.PACKAGE_VERSION =
-                            "${env.BASE_VERSION}-${env.GIT_SHORT_SHA}"
+                            "${env.BASE_VERSION}-g${env.GIT_SHORT_SHA}"
 
                         env.NEXUS_REGISTRY =
                             "${params.NEXUS_URL}/repository/${env.NEXUS_REPOSITORY}/"
