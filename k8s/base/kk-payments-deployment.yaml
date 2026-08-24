@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: kk-payments
-          image: kijanikiosk-payments:v1.1.0
+          image: kijanikiosk-payments:v1.5.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3001

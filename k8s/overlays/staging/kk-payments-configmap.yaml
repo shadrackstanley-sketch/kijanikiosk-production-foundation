@@ -10,3 +10,6 @@ data:
   APP_PORT: "3001"
   MAX_CONNECTIONS: "50"
   RECEIPT_BUCKET: "kk-payments-receipts-staging"
+  S3_ENDPOINT: "http://192.168.100.6:9000"
+  S3_FORCE_PATH_STYLE: "true"
+  AWS_REGION: "us-east-1"

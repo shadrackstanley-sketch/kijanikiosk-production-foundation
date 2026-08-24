@@ -1,0 +1,51 @@
+KIJANIKIOSK CAPSTONE - RECEIPT CHAIN INTEGRATION
+
+=== APPLICATION IMAGE ===
+kijanikiosk-payments:v1.5.0
+
+=== STAGING RECEIPT CONFIG ===
+kk-payments-receipts-staging
+http://192.168.100.6:9000
+
+=== RECEIPT CHAIN OBJECTS ===
+Name      : PAY-CAPSTONE-002.json
+Date      : 2026-08-24 00:41:30 UTC 
+Size      : 162 B  
+ETag      : 01b180ed61ba86699b9441e55a82c84b 
+Type      : file 
+Checksum  : CRC32:Yjat9g==
+Metadata  :
+  Content-Type: application/json 
+
+Name      : PAY-CAPSTONE-002.json
+Date      : 2026-08-24 20:03:18 UTC 
+Size      : 192 B  
+ETag      : 3f2349f3f048471789265d362212f163 
+Type      : file 
+Checksum  : CRC32:sW6lIw==
+Metadata  :
+  Content-Type: application/json 
+
+Name      : PAY-CAPSTONE-002.json
+Date      : 2026-08-24 20:03:18 UTC 
+Size      : 153 B  
+ETag      : b4e1c69f25a22075e74a782ff761662a 
+Type      : file 
+Checksum  : CRC32:/YX5jg==
+Metadata  :
+  Content-Type: application/json 
+
+Name      : PAY-CAPSTONE-002.json
+Date      : 2026-08-24 20:03:18 UTC 
+Size      : 117 B  
+ETag      : 70b236f858c81cecd08927607e10f186 
+Type      : file 
+Checksum  : CRC32:PA8f9A==
+Metadata  :
+  Content-Type: application/json 
+
+
+=== FINAL NOTIFICATION ===
+{"receipt_id": "PAY-CAPSTONE-002", "status": "NOTIFIED", "message": "Payment PAY-CAPSTONE-002 received successfully"}
+
+Result: PASS - staging kk-payments wrote to kk-payments-receipts-staging and the validator, formatter, and notifier chain completed successfully.
