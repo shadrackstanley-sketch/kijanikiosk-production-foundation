@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:20.18.1'
-            args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
-            reuseNode true
-        }
-    }
+    agent none
 
     parameters {
         string(
@@ -24,16 +18,34 @@ pipeline {
         ARTIFACT_DIRECTORY  = 'artifacts'
         TEST_RESULT_FILE    = 'test-results/junit.xml'
         CI                  = 'true'
+
+        STAGING_NAMESPACE   = 'kijani-staging'
+        PROD_NAMESPACE      = 'kijani-production'
+        STAGING_OVERLAY     = 'k8s/overlays/staging'
+        PROD_OVERLAY        = 'k8s/overlays/production'
+        STAGING_SERVICE     = 'kk-payments'
+        PROD_SERVICE        = 'kk-payments'
+        STAGING_PORT        = '3001'
+        PROD_PORT           = '3001'
+        CONTAINER_NAME      = 'kk-payments'
     }
 
     options {
-        timeout(time: 10, unit: 'MINUTES')
+        timeout(time: 20, unit: 'MINUTES')
         timestamps()
         buildDiscarder(logRotator(numToKeepStr: '20'))
     }
 
     stages {
         stage('Lint') {
+            agent {
+                docker {
+                    image 'node:20.18.1'
+                    args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
+                    reuseNode true
+                }
+            }
+
             steps {
                 dir("${PROJECT_DIR}") {
                     script {
@@ -66,6 +78,14 @@ pipeline {
         }
 
         stage('Build') {
+            agent {
+                docker {
+                    image 'node:20.18.1'
+                    args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
+                    reuseNode true
+                }
+            }
+
             steps {
                 dir("${PROJECT_DIR}") {
                     sh '''
@@ -84,6 +104,14 @@ pipeline {
         stage('Verify') {
             parallel {
                 stage('Test') {
+                    agent {
+                        docker {
+                            image 'node:20.18.1'
+                            args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
+                            reuseNode true
+                        }
+                    }
+
                     steps {
                         dir("${PROJECT_DIR}") {
                             sh '''
@@ -95,6 +123,14 @@ pipeline {
                 }
 
                 stage('Security Audit') {
+                    agent {
+                        docker {
+                            image 'node:20.18.1'
+                            args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
+                            reuseNode true
+                        }
+                    }
+
                     steps {
                         dir("${PROJECT_DIR}") {
                             sh '''
@@ -108,6 +144,14 @@ pipeline {
         }
 
         stage('Archive') {
+            agent {
+                docker {
+                    image 'node:20.18.1'
+                    args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
+                    reuseNode true
+                }
+            }
+
             steps {
                 dir("${PROJECT_DIR}") {
                     sh '''
@@ -138,6 +182,14 @@ pipeline {
         }
 
         stage('Publish') {
+            agent {
+                docker {
+                    image 'node:20.18.1'
+                    args '-e HOME=/tmp -e npm_config_cache=/tmp/.npm'
+                    reuseNode true
+                }
+            }
+
             steps {
                 dir("${PROJECT_DIR}") {
                     withCredentials([
@@ -191,21 +243,128 @@ NPMRC
                 }
             }
         }
+
+        stage('Build Container Image') {
+            agent any
+
+            steps {
+                script {
+                    env.CONTAINER_IMAGE =
+                        "kijanikiosk-payments:${env.GIT_SHORT_SHA}"
+                }
+
+                sh '''
+                    set -eu
+
+                    echo "Building ${CONTAINER_IMAGE}"
+
+                    docker build                       -f week8/deployment-pipeline/containers/Dockerfile.production                       -t "${CONTAINER_IMAGE}"                       "${PROJECT_DIR}"
+
+                    echo "Loading ${CONTAINER_IMAGE} into Minikube"
+
+                    docker save "${CONTAINER_IMAGE}" |
+                    docker exec -i minikube docker load
+                '''
+            }
+        }
+
+        stage('Deploy Staging') {
+            agent any
+
+            steps {
+                sh '''
+                    set -eu
+
+                    echo "Deploying to staging..."
+
+                    kubectl apply -k "${STAGING_OVERLAY}"
+
+                    kubectl set image                       deployment/kk-payments                       "${CONTAINER_NAME}=${CONTAINER_IMAGE}"                       -n "${STAGING_NAMESPACE}"
+
+                    kubectl rollout status                       deployment/kk-payments                       -n "${STAGING_NAMESPACE}"                       --timeout=120s
+                '''
+            }
+        }
+
+        stage('Staging Smoke Test') {
+            agent any
+
+            steps {
+                sh '''
+                    set -eu
+
+                    echo "Running staging smoke test..."
+
+                    kubectl run                       "jenkins-smoke-${BUILD_NUMBER}"                       --rm                       -i                       --restart=Never                       --image=curlimages/curl                       -n "${STAGING_NAMESPACE}"                       -- curl -fsS                       "http://${STAGING_SERVICE}:${STAGING_PORT}/health"
+
+                    echo "Staging smoke test passed."
+                '''
+            }
+        }
+
+        stage('Production Approval') {
+            agent none
+
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    input(
+                        message: 'Staging passed. Deploy to production?',
+                        ok: 'Deploy Production'
+                    )
+                }
+            }
+        }
+
+        stage('Deploy Production') {
+            agent any
+
+            steps {
+                sh '''
+                    set -eu
+
+                    echo "Deploying to production..."
+
+                    kubectl apply -k "${PROD_OVERLAY}"
+
+                    kubectl set image                       deployment/kk-payments                       "${CONTAINER_NAME}=${CONTAINER_IMAGE}"                       -n "${PROD_NAMESPACE}"
+
+                    kubectl rollout status                       deployment/kk-payments                       -n "${PROD_NAMESPACE}"                       --timeout=120s
+                '''
+            }
+        }
+
+        stage('Production Verification') {
+            agent any
+
+            steps {
+                sh '''
+                    set -eu
+
+                    echo "Running production verification..."
+
+                    kubectl run                       "jenkins-prod-check-${BUILD_NUMBER}"                       --rm                       -i                       --restart=Never                       --image=curlimages/curl                       -n "${PROD_NAMESPACE}"                       -- curl -fsS                       "http://${PROD_SERVICE}:${PROD_PORT}/health"
+
+                    echo "Production verification passed."
+                '''
+            }
+        }
     }
 
     post {
         always {
-            junit(
-                testResults: "${PROJECT_DIR}/${TEST_RESULT_FILE}",
-                allowEmptyResults: true
-            )
-
             echo "Pipeline finished with status: ${currentBuild.currentResult}"
 
-            cleanWs(
-                deleteDirs: true,
-                notFailBuild: true
-            )
+            node('built-in') {
+                junit(
+                    testResults: "${PROJECT_DIR}/${TEST_RESULT_FILE}",
+                    allowEmptyResults: true
+                )
+
+                cleanWs(
+                    deleteDirs: true,
+                    notFailBuild: true
+                )
+            }
         }
 
         success {
