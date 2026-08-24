@@ -1,0 +1,33 @@
+KIJANIKIOSK CAPSTONE - JENKINS PRODUCTION PROMOTION
+
+=== STAGING ===
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS    IMAGES                          SELECTOR
+deployment.apps/kk-payments   3/3     3            3           22h   kk-payments   kijanikiosk-payments:ecc72824   app=kk-payments
+
+NAME                               READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+pod/kk-payments-7d844697db-62w8z   1/1     Running   0          7m20s   10.244.0.63   minikube   <none>           <none>
+pod/kk-payments-7d844697db-hktbs   1/1     Running   0          7m8s    10.244.0.65   minikube   <none>           <none>
+pod/kk-payments-7d844697db-p4z9p   1/1     Running   0          7m20s   10.244.0.64   minikube   <none>           <none>
+
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+service/kk-payments   ClusterIP   10.105.175.172   <none>        3001/TCP   22h   app=kk-payments
+
+=== PRODUCTION ===
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS    IMAGES                          SELECTOR
+deployment.apps/kk-payments   3/3     3            3           2m32s   kk-payments   kijanikiosk-payments:ecc72824   app=kk-payments
+
+NAME                               READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+pod/kk-payments-7d844697db-pvjxs   1/1     Running   0          2m32s   10.244.0.69   minikube   <none>           <none>
+pod/kk-payments-7d844697db-v9mq2   1/1     Running   0          2m32s   10.244.0.70   minikube   <none>           <none>
+pod/kk-payments-7d844697db-zrd85   1/1     Running   0          2m19s   10.244.0.71   minikube   <none>           <none>
+
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+service/kk-payments   ClusterIP   10.103.87.86   <none>        3001/TCP   2m32s   app=kk-payments
+
+=== STAGING IMAGE ===
+kijanikiosk-payments:ecc72824
+
+=== PRODUCTION IMAGE ===
+kijanikiosk-payments:ecc72824
+
+Result: PASS - Jenkins promoted the same immutable application image through staging and production.
